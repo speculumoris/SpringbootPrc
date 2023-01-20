@@ -1,10 +1,13 @@
 package com.tpe.service;
 
 import com.tpe.domain.Customer;
+import com.tpe.dto.CustomerDTO;
 import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,5 +34,41 @@ public class CustomerService {
         Customer customer=customerRepository.findById(id).
                 orElseThrow(()->new ResourceNotFoundException("Customer not found by id: "+id));
         return customer;
+    }
+
+    public void deleteCustomerById(Long id) {
+        Customer customer=getCustomerById(id);
+        customerRepository.delete(customer);
+    }
+
+    public CustomerDTO getCustomerDtoById(Long id) {
+        Customer customer=getCustomerById(id);
+//        CustomerDTO customerDTO=new CustomerDTO();
+//        customerDTO.setName(customer.getName());
+//        customerDTO.setLastName(customer.getLastName());
+//        customerDTO.setEmail(customer.getEmail());
+//        customerDTO.setPhone(customer.getPhone());
+
+        CustomerDTO customerDTO=new CustomerDTO(customer);//constructorla mapleme
+        return customerDTO;
+    }
+
+    public void updateCustomerById(Long id, CustomerDTO customerDTO) {
+        Customer customer=getCustomerById(id);
+        //email var mı
+        boolean isExistsEmail=customerRepository.existsByEmail(customerDTO.getEmail());
+        if(isExistsEmail && !customerDTO.getEmail().equals(customer.getEmail())){
+            throw new ConflictException("Email is already in use: "+customerDTO.getEmail());
+        }
+        customer.setName(customerDTO.getName());
+        customer.setLastName(customerDTO.getLastName());
+        customer.setPhone(customerDTO.getPhone());
+        customer.setEmail(customerDTO.getEmail());
+        customerRepository.save(customer);
+    }
+
+    public Page<Customer> getAllCustomerByPage(Pageable pageable) {
+        Page<Customer> customerPage=customerRepository.findAll(pageable);
+        return customerPage;
     }
 }
