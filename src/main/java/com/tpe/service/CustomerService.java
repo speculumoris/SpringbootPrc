@@ -41,7 +41,7 @@ public class CustomerService {
         customerRepository.delete(customer);
     }
 
-    public CustomerDTO getCustomerDtoById(Long id) {
+    public CustomerDTO getCustomerDtoById(Long id) {//Entity->DTO
         Customer customer=getCustomerById(id);
 //        CustomerDTO customerDTO=new CustomerDTO();
 //        customerDTO.setName(customer.getName());
@@ -70,5 +70,18 @@ public class CustomerService {
     public Page<Customer> getAllCustomerByPage(Pageable pageable) {
         Page<Customer> customerPage=customerRepository.findAll(pageable);
         return customerPage;
+    }
+
+    public List<Customer> getAllCustomerByName(String name) {
+        return customerRepository.findByName(name);
+    }
+
+    public List<Customer> getAllCustomerByFullName(String name, String lastName) {
+        return customerRepository.findByNameAndLastName(name,lastName);
+    }
+
+    public List<Customer> getAllCustomerByNameLike(String name) {//Ja
+        String lowername=name.toLowerCase();//ja
+        return customerRepository.findAllByNameLike(lowername);//ja
     }
 }

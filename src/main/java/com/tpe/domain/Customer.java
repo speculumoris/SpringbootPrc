@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //    @NotNull(message = "First name can not be null")//sadece null olmasın,"" olabilir," " olabilir.
 //    @NotBlank(message = "First name can not be space")//null olamaz,empty olamaz,boşluk olamaz
@@ -38,6 +40,10 @@ public class Customer {
     private String email;
 
     private String phone;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Product> products=new ArrayList<>();
+
 
 
 }

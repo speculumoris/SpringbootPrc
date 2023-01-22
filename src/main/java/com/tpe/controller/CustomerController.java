@@ -74,7 +74,7 @@ public class CustomerController {
     //6-tüm customerları page page gösterme
     //http://localhost:8080/customers/page?page=1&size=2&sort=id&direction=ASC
     @GetMapping("/page")
-    public ResponseEntity<Page<Customer>> getAllCustomerByPage(@RequestParam("page") int page,//hangi sayfa
+    public ResponseEntity<Page<Customer>> getAllCustomerByPage(@RequestParam(required = false,value = "page",defaultValue ="0" ) int page,//hangi sayfa
                                                                @RequestParam("size") int size,//her sayfada kaç adet
                                                                @RequestParam("sort") String prop,//sıralama fieldı
                                                                @RequestParam("direction") Sort.Direction direction){//ASC,DESC
@@ -82,6 +82,36 @@ public class CustomerController {
         Page<Customer> customersPage=customerService.getAllCustomerByPage(pageable);
         return ResponseEntity.ok(customersPage);
     }
+
+    //7-Name ile customer getirme->http://localhost:8080/customers/query?name=Jack
+    @GetMapping("/query")
+    public ResponseEntity<List<Customer>> getAllCustomerByName(@RequestParam("name") String name){
+        List<Customer> customers=customerService.getAllCustomerByName(name);
+        return ResponseEntity.ok(customers);
+    }
+    //8-http://localhost:8080/customers/fullquery?name=Jack&lastName=Sparrow
+    @GetMapping("/fullquery")
+    public ResponseEntity<List<Customer>> getAllCustomerByFullName(@RequestParam("name") String name,
+                                                                   @RequestParam("lastName") String lastName){
+        List<Customer> customers=customerService.getAllCustomerByFullName(name,lastName);
+        return ResponseEntity.ok(customers);
+    }
+    //9-İsmi ... içeren customerlar:  http://localhost:8080/customers/jpql?name=Ja
+    @GetMapping("/jpql")
+    public ResponseEntity<List<Customer>> getAllCustomerNameLike(@RequestParam("name") String name){
+        List<Customer> customers=customerService.getAllCustomerByNameLike(name);//Ja
+        return ResponseEntity.ok(customers);
+    }
+
+    //ÖDEV:Requestle gelen "kelime" name veya lastname inde geçen customerları döndür.
+    //http://localhost:8080/customers/search?word=pa
+
+
+
+
+
+
+
 
 
 
